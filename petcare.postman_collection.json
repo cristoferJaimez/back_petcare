@@ -1,0 +1,466 @@
+{
+  "info": {
+    "name": "PetCare API v1",
+    "_postman_id": "petcare-api-v1",
+    "description": "Colección completa de la API PetCare. Ejecutar 'Login' primero y copiar el access_token en la variable {{token}} del entorno.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:3000" },
+    { "key": "token",    "value": "<pegar access_token después de Login>" }
+  ],
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/"
+      }
+    },
+    {
+      "name": "Usuarios",
+      "item": [
+        {
+          "name": "Registro",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{base_url}}/api/v1/usuarios/registro",
+            "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Carlos Test\",\n  \"email\": \"carlos@test.com\",\n  \"password\": \"1234\"\n}" }
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{base_url}}/api/v1/usuarios/login",
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"adrian@ejemplo.com\",\n  \"password\": \"1234\"\n}" }
+          }
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{base_url}}/api/v1/usuarios/refresh",
+            "body": { "mode": "raw", "raw": "{\n  \"refresh_token\": \"<pegar refresh_token>\"\n}" }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{base_url}}/api/v1/usuarios/logout",
+            "body": { "mode": "raw", "raw": "{\n  \"refresh_token\": \"<pegar refresh_token>\"\n}" }
+          }
+        },
+        {
+          "name": "Obtener por ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/api/v1/usuarios/1"
+          }
+        },
+        {
+          "name": "Actualizar",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type",  "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/api/v1/usuarios/1",
+            "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Adrian Ruiz Actualizado\",\n  \"email\": \"adrian@ejemplo.com\",\n  \"foto_url\": null\n}" }
+          }
+        },
+        {
+          "name": "Eliminar",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/api/v1/usuarios/1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Mascotas",
+      "item": [
+        {
+          "name": "Listar todas",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/api/v1/mascotas"
+          }
+        },
+        {
+          "name": "Obtener por ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/api/v1/mascotas/1"
+          }
+        },
+        {
+          "name": "Crear",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type",  "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/api/v1/mascotas",
+            "body": { "mode": "raw", "raw": "{\n  \"usuario_id\": 1,\n  \"raza_id\": 1,\n  \"nombre\": \"Rocky\",\n  \"especie\": \"Perro\",\n  \"edad\": 2,\n  \"peso\": 15.5,\n  \"sexo\": \"macho\",\n  \"dieta\": \"Concentrado\",\n  \"vacunacion_al_dia\": true,\n  \"notas\": \"Le gusta correr en el parque\"\n}" }
+          }
+        },
+        {
+          "name": "Actualizar",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type",  "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/api/v1/mascotas/1",
+            "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Pegotes Actualizado\",\n  \"edad\": 4,\n  \"notas\": \"Nota actualizada\"\n}" }
+          }
+        },
+        {
+          "name": "Eliminar",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/api/v1/mascotas/1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Citas",
+      "item": [
+        {
+          "name": "Listar todas",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/api/v1/citas"
+          }
+        },
+        {
+          "name": "Obtener por ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/api/v1/citas/1"
+          }
+        },
+        {
+          "name": "Crear",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type",  "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/api/v1/citas",
+            "body": { "mode": "raw", "raw": "{\n  \"mascota_id\": 1,\n  \"fecha\": \"2026-07-10T10:00:00.000Z\",\n  \"motivo\": \"Revisión general\",\n  \"profesional\": \"Ana Gómez\",\n  \"estado\": \"Programada\"\n}" }
+          }
+        },
+        {
+          "name": "Actualizar",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type",  "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/api/v1/citas/1",
+            "body": { "mode": "raw", "raw": "{\n  \"fecha\": \"2026-07-15T11:00:00.000Z\",\n  \"motivo\": \"Revisión general actualizada\",\n  \"profesional\": \"Ana Gómez\",\n  \"estado\": \"Programada\"\n}" }
+          }
+        },
+        {
+          "name": "Cambiar estado — Confirmar",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type",  "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/api/v1/citas/1/estado",
+            "body": { "mode": "raw", "raw": "{\n  \"estado\": \"Confirmada\"\n}" }
+          }
+        },
+        {
+          "name": "Cambiar estado — Cancelar",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type",  "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/api/v1/citas/1/estado",
+            "body": { "mode": "raw", "raw": "{\n  \"estado\": \"Cancelada\"\n}" }
+          }
+        },
+        {
+          "name": "Cambiar estado — Completar",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type",  "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/api/v1/citas/1/estado",
+            "body": { "mode": "raw", "raw": "{\n  \"estado\": \"Completada\"\n}" }
+          }
+        },
+        {
+          "name": "Eliminar",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/api/v1/citas/1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cuidadores",
+      "item": [
+        {
+          "name": "Listar todos",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/api/v1/cuidadores"
+          }
+        },
+        {
+          "name": "Obtener por ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/api/v1/cuidadores/1"
+          }
+        },
+        {
+          "name": "Crear",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type",  "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/api/v1/cuidadores",
+            "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Pedro Díaz\",\n  \"rol\": \"Paseador\",\n  \"ciudad\": \"Cali\",\n  \"calificacion\": 4.5,\n  \"experiencia_anios\": 3,\n  \"telefono\": \"3001234567\",\n  \"whatsapp\": \"3001234567\",\n  \"disponible\": true,\n  \"servicios_completados\": 0\n}" }
+          }
+        },
+        {
+          "name": "Actualizar",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type",  "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/api/v1/cuidadores/1",
+            "body": { "mode": "raw", "raw": "{\n  \"calificacion\": 5.0,\n  \"disponible\": true\n}" }
+          }
+        },
+        {
+          "name": "Eliminar",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/api/v1/cuidadores/1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Razas",
+      "item": [
+        {
+          "name": "Listar todas",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/razas"
+          }
+        },
+        {
+          "name": "Filtrar por tipo (perro)",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/razas?tipo=perro"
+          }
+        },
+        {
+          "name": "Filtrar por tipo (gato)",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/razas?tipo=gato"
+          }
+        },
+        {
+          "name": "Obtener por ID",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/razas/1"
+          }
+        },
+        {
+          "name": "Recomendaciones de raza",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/razas/1/recomendaciones"
+          }
+        },
+        {
+          "name": "Crear",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{base_url}}/api/v1/razas",
+            "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Labrador Retriever\",\n  \"tipo_animal\": \"perro\",\n  \"tamanio\": \"grande\",\n  \"esperanza_vida\": \"10-12 años\",\n  \"nivel_ejercicio\": \"alto\",\n  \"descripcion\": \"Raza familiar muy popular.\",\n  \"descripcion_detallada\": \"El Labrador Retriever es una de las razas más queridas por su carácter amable y adaptable.\"\n}" }
+          }
+        },
+        {
+          "name": "Actualizar",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{base_url}}/api/v1/razas/1",
+            "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Golden Retriever\",\n  \"descripcion\": \"Descripción actualizada.\",\n  \"descripcion_detallada\": \"Detalle actualizado.\"\n}" }
+          }
+        },
+        {
+          "name": "Eliminar",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/api/v1/razas/1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tutoriales",
+      "item": [
+        {
+          "name": "Listar todos",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/tutoriales"
+          }
+        },
+        {
+          "name": "Filtrar por nivel (facil)",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/tutoriales?nivel=facil"
+          }
+        },
+        {
+          "name": "Filtrar por nivel (medio)",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/tutoriales?nivel=medio"
+          }
+        },
+        {
+          "name": "Obtener por ID",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/tutoriales/1"
+          }
+        },
+        {
+          "name": "Crear",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{base_url}}/api/v1/tutoriales",
+            "body": { "mode": "raw", "raw": "{\n  \"titulo\": \"Baño correcto para perros\",\n  \"descripcion\": \"Pasos para bañar tu perro en casa.\",\n  \"duracion_min\": 10,\n  \"nivel_dificultad\": \"facil\",\n  \"url_externo\": \"https://www.youtube.com/watch?v=ejemplo\"\n}" }
+          }
+        },
+        {
+          "name": "Actualizar",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{base_url}}/api/v1/tutoriales/1",
+            "body": { "mode": "raw", "raw": "{\n  \"titulo\": \"Título actualizado\",\n  \"descripcion\": \"Descripción actualizada.\",\n  \"duracion_min\": 12\n}" }
+          }
+        },
+        {
+          "name": "Eliminar",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/api/v1/tutoriales/1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Recursos Veterinarios",
+      "item": [
+        {
+          "name": "Listar todos",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/recursos-veterinarios"
+          }
+        },
+        {
+          "name": "Filtrar por tipo (clinica)",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/recursos-veterinarios?tipo=clinica"
+          }
+        },
+        {
+          "name": "Filtrar por tipo (guia)",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/recursos-veterinarios?tipo=guia"
+          }
+        },
+        {
+          "name": "Obtener por ID",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/recursos-veterinarios/1"
+          }
+        },
+        {
+          "name": "Crear",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{base_url}}/api/v1/recursos-veterinarios",
+            "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Clínica Pet Salud\",\n  \"descripcion\": \"Clínica veterinaria 24 horas.\",\n  \"tipo\": \"clinica\",\n  \"url_externo\": \"https://petsalud.com\"\n}" }
+          }
+        },
+        {
+          "name": "Actualizar",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{base_url}}/api/v1/recursos-veterinarios/1",
+            "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Clínica VetCare Actualizada\",\n  \"descripcion\": \"Descripción actualizada.\"\n}" }
+          }
+        },
+        {
+          "name": "Eliminar",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/api/v1/recursos-veterinarios/1"
+          }
+        }
+      ]
+    }
+  ]
+}
