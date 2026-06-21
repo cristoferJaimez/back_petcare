@@ -80,7 +80,16 @@ const update = async (req, res) => {
     const id = Number.parseInt(String(req.params.id).replace(/\D+/g, ''), 10);
     if (!id) return res.status(400).json({ error: 'ID inválido' });
     if (db.getStatus()) {
-      const item = await Model.update(id, req.body);
+      const b = req.body;
+      const payload = {
+        nombre:            b.nombre,
+        especie:           b.especie,
+        edad:              b.edad ?? 0,
+        peso:              b.peso ?? b.pesoKg ?? null,
+        dieta:             b.dieta ?? null,
+        vacunacion_al_dia: b.vacunacion_al_dia ?? b.vacunacionAlDia ?? false
+      };
+      const item = await Model.update(id, payload);
       if (!item) return res.status(404).json({ error: 'Mascota no encontrada' });
       return res.json(item);
     }
