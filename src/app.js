@@ -10,6 +10,7 @@ const citasRoutes                = require('./routes/citas.routes');
 const razasRoutes                = require('./routes/razas.routes');
 const tutorialesRoutes           = require('./routes/tutoriales.routes');
 const recursosVeterinariosRoutes = require('./routes/recursos-veterinarios.routes');
+const adminRoutes                = require('./routes/admin.routes');
 
 const app  = express();
 const PORT = process.env.PORT || 3000;
@@ -48,6 +49,7 @@ app.use('/api/v1/citas',                 citasRoutes);
 app.use('/api/v1/razas',                 razasRoutes);
 app.use('/api/v1/tutoriales',            tutorialesRoutes);
 app.use('/api/v1/recursos-veterinarios', recursosVeterinariosRoutes);
+app.use('/api/v1/admin',                adminRoutes);
 
 app.use((req, res) => {
   res.status(404).json({ error: `Ruta ${req.method} ${req.url} no encontrada` });

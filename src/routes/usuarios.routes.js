@@ -1,6 +1,6 @@
 const { Router }                                          = require('express');
 const { registro, login, refresh, logout, getById, update, remove } = require('../controllers/usuarios.controller');
-const verificarToken                                      = require('../middleware/auth');
+const { verificarToken }                                  = require('../middleware/auth');
 const router = Router();
 
 router.post('/registro', registro);

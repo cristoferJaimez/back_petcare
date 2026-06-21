@@ -5,8 +5,8 @@ const usuarios      = require('../data/usuarios.data');
 const refreshTokens = require('../data/refresh-tokens.data');
 
 const generarTokens = (payload) => {
-  const access_token  = jwt.sign(payload, process.env.JWT_SECRET,         { expiresIn: process.env.JWT_EXPIRES_IN });
-  const refresh_token = jwt.sign(payload, process.env.JWT_REFRESH_SECRET,  { expiresIn: process.env.JWT_REFRESH_EXPIRES_IN });
+  const access_token  = jwt.sign(payload, process.env.JWT_SECRET,        { expiresIn: process.env.JWT_EXPIRES_IN });
+  const refresh_token = jwt.sign(payload, process.env.JWT_REFRESH_SECRET, { expiresIn: process.env.JWT_REFRESH_EXPIRES_IN });
   return { access_token, refresh_token };
 };
 
@@ -51,7 +51,7 @@ const login = async (req, res) => {
         return res.status(401).json({ error: 'Contraseña incorrecta', code: 'INVALID_PASSWORD' });
       }
     }
-    const payload = { id: usuario.id, email: usuario.email };
+    const payload = { id: usuario.id, email: usuario.email, rol: usuario.rol ?? 'usuario' };
     const { access_token, refresh_token } = generarTokens(payload);
     refreshTokens.add(refresh_token);
     const { password_hash, ...datos } = usuario;

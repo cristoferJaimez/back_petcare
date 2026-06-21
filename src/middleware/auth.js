@@ -13,4 +13,11 @@ const verificarToken = (req, res, next) => {
   });
 };
 
-module.exports = verificarToken;
+const verificarAdmin = (req, res, next) => {
+  if (req.usuario?.rol !== 'admin') {
+    return res.status(403).json({ error: 'Acceso restringido: se requiere rol admin' });
+  }
+  next();
+};
+
+module.exports = { verificarToken, verificarAdmin };

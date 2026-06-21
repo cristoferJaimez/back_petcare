@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const { getAll, getById, create, update, updateEstado, remove } = require('../controllers/citas.controller');
-const verificarToken = require('../middleware/auth');
+const { verificarToken } = require('../middleware/auth');
 const router = Router();
 
 router.get('/',              verificarToken, getAll);

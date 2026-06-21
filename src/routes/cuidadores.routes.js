@@ -1,6 +1,6 @@
 const { Router }                    = require('express');
 const { getAll, getById, create, update, remove } = require('../controllers/cuidadores.controller');
-const verificarToken                = require('../middleware/auth');
+const { verificarToken }            = require('../middleware/auth');
 const router = Router();
 
 router.get('/',     verificarToken, getAll);
