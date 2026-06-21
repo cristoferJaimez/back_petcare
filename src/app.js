@@ -21,6 +21,7 @@ const allowedOrigins = new Set([
     .filter(Boolean),
   'capacitor://localhost',
   'http://localhost',
+  'https://localhost',
   'ionic://localhost',
 ]);
 
