@@ -1,32 +1,50 @@
 const db = require('../config/db');
 
+const SELECT_CITA = `
+  SELECT c.id, c.mascota_id, c.fecha, c.motivo, c.profesional, c.estado,
+         m.nombre AS mascota_nombre
+  FROM citas c
+  LEFT JOIN mascotas m ON c.mascota_id = m.id`;
+
 const getAllByUsuario = async (usuario_id) => {
-  const [rows] = await db.query('CALL sp_citas_listar_por_usuario(?)', [usuario_id]);
-  return rows[0];
+  const [rows] = await db.query(
+    `${SELECT_CITA}
+     WHERE m.usuario_id = ?
+     ORDER BY c.fecha DESC`,
+    [usuario_id]
+  );
+  return rows;
 };
 
 const getById = async (id) => {
-  const [rows] = await db.query('CALL sp_cita_obtener(?)', [id]);
-  return rows[0][0];
+  const [rows] = await db.query(`${SELECT_CITA} WHERE c.id = ?`, [id]);
+  return rows[0];
 };
 
 const create = async ({ mascota_id, fecha, motivo, profesional, estado }) => {
-  const [rows] = await db.query('CALL sp_cita_crear(?, ?, ?, ?, ?)', [mascota_id, fecha, motivo, profesional, estado ?? 'Programada']);
-  return rows[0][0];
+  const [result] = await db.query(
+    `INSERT INTO citas (mascota_id, fecha, motivo, profesional, estado)
+     VALUES (?, ?, ?, ?, ?)`,
+    [mascota_id, fecha, motivo, profesional, estado ?? 'Programada']
+  );
+  return getById(result.insertId);
 };
 
 const update = async (id, { fecha, motivo, profesional, estado }) => {
-  const [rows] = await db.query('CALL sp_cita_actualizar(?, ?, ?, ?, ?)', [id, fecha, motivo, profesional, estado]);
-  return rows[0][0];
+  await db.query(
+    `UPDATE citas SET fecha = ?, motivo = ?, profesional = ?, estado = ? WHERE id = ?`,
+    [fecha, motivo, profesional, estado, id]
+  );
+  return getById(id);
 };
 
 const updateEstado = async (id, estado) => {
-  const [rows] = await db.query('CALL sp_cita_actualizar_estado(?, ?)', [id, estado]);
-  return rows[0][0];
+  await db.query('UPDATE citas SET estado = ? WHERE id = ?', [estado, id]);
+  return getById(id);
 };
 
 const remove = async (id) => {
-  await db.query('CALL sp_cita_eliminar(?)', [id]);
+  await db.query('DELETE FROM citas WHERE id = ?', [id]);
 };
 
 module.exports = { getAllByUsuario, getById, create, update, updateEstado, remove };
