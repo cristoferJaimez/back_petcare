@@ -125,4 +125,20 @@ const remove = async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 };
 
-module.exports = { registro, login, refresh, logout, getById, update, remove };
+const uploadFoto = async (req, res) => {
+  try {
+    const id = req.usuario.id;
+    if (!req.file) return res.status(400).json({ error: 'No se recibió archivo' });
+    const cloudinary = require('../config/cloudinary');
+    const foto_url = await new Promise((resolve, reject) => {
+      cloudinary.uploader.upload_stream(
+        { folder: 'petcare/usuarios', public_id: `usuario_${id}`, overwrite: true, resource_type: 'image' },
+        (error, result) => error ? reject(error) : resolve(result.secure_url)
+      ).end(req.file.buffer);
+    });
+    await db.query('UPDATE usuarios SET foto_url = ? WHERE id = ?', [foto_url, id]);
+    res.json({ foto_url });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+};
+
+module.exports = { registro, login, refresh, logout, getById, update, remove, uploadFoto };
