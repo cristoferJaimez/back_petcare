@@ -115,4 +115,23 @@ const remove = async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 };
 
-module.exports = { getAll, getById, create, update, remove };
+const uploadFoto = async (req, res) => {
+  try {
+    const id = Number.parseInt(String(req.params.id).replace(/\D+/g, ''), 10);
+    if (!id) return res.status(400).json({ error: 'ID inválido' });
+    if (!req.file) return res.status(400).json({ error: 'No se recibió archivo' });
+
+    const cloudinary = require('../config/cloudinary');
+    const foto_url = await new Promise((resolve, reject) => {
+      cloudinary.uploader.upload_stream(
+        { folder: 'petcare/mascotas', public_id: `mascota_${id}`, overwrite: true, resource_type: 'image' },
+        (error, result) => error ? reject(error) : resolve(result.secure_url)
+      ).end(req.file.buffer);
+    });
+
+    await db.query('UPDATE mascotas SET foto_url = ? WHERE id = ?', [foto_url, id]);
+    res.json({ foto_url });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+};
+
+module.exports = { getAll, getById, create, update, remove, uploadFoto };
