@@ -132,7 +132,8 @@ const uploadFoto = async (req, res) => {
     const cloudinary = require('../config/cloudinary');
     const foto_url = await new Promise((resolve, reject) => {
       cloudinary.uploader.upload_stream(
-        { folder: 'petcare/usuarios', public_id: `usuario_${id}`, overwrite: true, resource_type: 'image' },
+        { folder: 'petcare/usuarios', public_id: `usuario_${id}`, overwrite: true, resource_type: 'image',
+          transformation: [{ width: 300, height: 300, crop: 'fill', gravity: 'auto' }] },
         (error, result) => error ? reject(error) : resolve(result.secure_url)
       ).end(req.file.buffer);
     });
