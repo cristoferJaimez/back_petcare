@@ -1,4 +1,5 @@
 const jwt           = require('jsonwebtoken');
+const bcrypt        = require('bcryptjs');
 const db            = require('../config/db');
 const Model         = require('../models/usuario.model');
 const usuarios      = require('../data/usuarios.data');
@@ -13,15 +14,16 @@ const generarTokens = (payload) => {
 const registro = async (req, res) => {
   try {
     const { nombre, email, password } = req.body;
+    const hash = await bcrypt.hash(password, 10);
     if (db.getStatus()) {
       const existe = await Model.getByEmail(email);
       if (existe) return res.status(400).json({ error: 'El email ya está registrado' });
-      const nuevo = await Model.create({ nombre, email, password_hash: password });
+      const nuevo = await Model.create({ nombre, email, password_hash: hash });
       return res.status(201).json(nuevo);
     }
     if (usuarios.some(u => u.email === email))
       return res.status(400).json({ error: 'El email ya está registrado' });
-    const nuevo = { id: usuarios.length + 1, nombre, email, password_hash: password, es_invitado: false };
+    const nuevo = { id: usuarios.length + 1, nombre, email, password_hash: hash, es_invitado: false };
     usuarios.push(nuevo);
     const { password_hash, ...datos } = nuevo;
     res.status(201).json(datos);
@@ -38,7 +40,8 @@ const login = async (req, res) => {
         return res.status(404).json({ error: 'Usuario no encontrado', code: 'USER_NOT_FOUND' });
       }
 
-      if (usuario.password_hash !== password) {
+      const valida = await bcrypt.compare(password, usuario.password_hash);
+      if (!valida) {
         return res.status(401).json({ error: 'Contraseña incorrecta', code: 'INVALID_PASSWORD' });
       }
     } else {
@@ -47,7 +50,8 @@ const login = async (req, res) => {
         return res.status(404).json({ error: 'Usuario no encontrado', code: 'USER_NOT_FOUND' });
       }
 
-      if (usuario.password_hash !== password) {
+      const valida = await bcrypt.compare(password, usuario.password_hash);
+      if (!valida) {
         return res.status(401).json({ error: 'Contraseña incorrecta', code: 'INVALID_PASSWORD' });
       }
     }

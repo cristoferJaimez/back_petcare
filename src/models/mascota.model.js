@@ -10,8 +10,8 @@ const getById = async (id) => {
   return rows[0][0];
 };
 
-const create = async ({ usuario_id, raza_id, nombre, especie, edad, peso, sexo, dieta, vacunacion_al_dia, foto_url }) => {
-  const [rows] = await db.query('CALL sp_mascota_crear(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [usuario_id, raza_id, nombre, especie, edad, peso, sexo, dieta, vacunacion_al_dia ?? 0, foto_url]);
+const create = async ({ usuario_id, raza_id, nombre, especie, edad, peso, sexo, dieta, vacunacion_al_dia, foto_url, notas }) => {
+  const [rows] = await db.query('CALL sp_mascota_crear(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [usuario_id, raza_id ?? null, nombre, especie, edad ?? 0, peso ?? null, sexo ?? null, dieta ?? null, vacunacion_al_dia ? 1 : 0, foto_url ?? null, notas ?? null]);
   return rows[0][0];
 };
 

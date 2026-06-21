@@ -27,14 +27,19 @@ const getById = async (req, res) => {
 
 const create = async (req, res) => {
   try {
-    const { mascota_id, fecha, motivo, profesional, estado } = req.body;
+    const b = req.body;
+    // Accept both camelCase (frontend) and snake_case; extract integer from 'mas-5' → 5
+    const rawId = b.mascota_id ?? b.mascotaId ?? null;
+    const mascota_id = rawId ? (Number.parseInt(String(rawId).replace(/\D+/g, ''), 10) || null) : null;
+    const { fecha, motivo, profesional } = b;
+    const estado = b.estado ?? 'Programada';
     if (!mascota_id || !fecha || !motivo || !profesional) {
       return res.status(400).json({ error: 'mascota_id, fecha, motivo y profesional son requeridos' });
     }
     const item = db.getStatus()
       ? await Model.create({ mascota_id, fecha, motivo, profesional, estado })
       : (() => {
-          const nueva = { id: citas.length + 1, mascota_id, mascota_nombre: '', fecha, motivo, profesional, estado: estado ?? 'Programada' };
+          const nueva = { id: citas.length + 1, mascota_id, mascota_nombre: '', fecha, motivo, profesional, estado };
           citas.push(nueva);
           return nueva;
         })();
