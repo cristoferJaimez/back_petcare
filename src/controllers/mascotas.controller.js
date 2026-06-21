@@ -28,7 +28,8 @@ const getAll = async (req, res) => {
 
 const getById = async (req, res) => {
   try {
-    const id = Number.parseInt(req.params.id);
+    const id = Number.parseInt(String(req.params.id).replace(/\D+/g, ''), 10);
+    if (!id) return res.status(400).json({ error: 'ID inválido' });
     if (!db.getStatus()) {
       const item = mascotas.find(m => m.id === id);
       if (!item) return res.status(404).json({ error: 'Mascota no encontrada' });
@@ -76,7 +77,8 @@ const create = async (req, res) => {
 
 const update = async (req, res) => {
   try {
-    const id = Number.parseInt(req.params.id);
+    const id = Number.parseInt(String(req.params.id).replace(/\D+/g, ''), 10);
+    if (!id) return res.status(400).json({ error: 'ID inválido' });
     if (db.getStatus()) {
       const item = await Model.update(id, req.body);
       if (!item) return res.status(404).json({ error: 'Mascota no encontrada' });
@@ -91,7 +93,8 @@ const update = async (req, res) => {
 
 const remove = async (req, res) => {
   try {
-    const id = Number.parseInt(req.params.id);
+    const id = Number.parseInt(String(req.params.id).replace(/\D+/g, ''), 10);
+    if (!id) return res.status(400).json({ error: 'ID inválido' });
     if (db.getStatus()) {
       await Model.remove(id);
       return res.json({ mensaje: 'Mascota eliminada' });
