@@ -24,5 +24,6 @@ const init = async () => {
 
 const getPool      = () => pool;
 const getStatus    = () => isConnected;
+const query        = (...args) => pool.query(...args);
 
-module.exports = { init, getPool, getStatus };
+module.exports = { init, getPool, getStatus, query };
