@@ -16,16 +16,14 @@ const create = async ({ usuario_id, raza_id, nombre, especie, edad, peso, sexo, 
 };
 
 const update = async (id, { nombre, especie, edad, peso, dieta, vacunacion_al_dia }) => {
-  const [rows] = await db.query('CALL sp_mascota_actualizar(?, ?, ?, ?, ?, ?, ?)', [
-    id,
-    nombre,
-    especie,
-    edad ?? 0,
-    peso ?? null,
-    dieta ?? null,
-    vacunacion_al_dia ? 1 : 0
-  ]);
-  return rows[0][0];
+  await db.query(
+    `UPDATE mascotas
+     SET nombre = ?, especie = ?, edad = ?, peso = ?, dieta = ?, vacunacion_al_dia = ?
+     WHERE id = ?`,
+    [nombre, especie, edad ?? 0, peso ?? null, dieta ?? null, vacunacion_al_dia ? 1 : 0, id]
+  );
+  const [rows] = await db.query('SELECT * FROM mascotas WHERE id = ?', [id]);
+  return rows[0];
 };
 
 const remove = async (id) => {
