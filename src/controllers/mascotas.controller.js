@@ -4,19 +4,50 @@ const mascotas    = require('../data/mascotas.data');
 
 const getAll = async (req, res) => {
   try {
-    const data = db.getStatus() ? await Model.getAll(req.usuario.id) : mascotas;
-    res.json(data);
+    if (!db.getStatus()) return res.json(mascotas);
+    const data = await Model.getAll(req.usuario.id);
+    if (!data.length) return res.json(data);
+    const ids = data.map(m => m.id);
+    const [asignaciones] = await db.query(
+      `SELECT mc.mascota_id, c.nombre AS cuidador_nombre, c.ciudad AS cuidador_ciudad
+       FROM mascotas_cuidadores mc
+       JOIN cuidadores c ON mc.cuidador_id = c.id
+       WHERE mc.mascota_id IN (${ids.map(() => '?').join(',')})`,
+      ids
+    );
+    const asignMap = {};
+    asignaciones.forEach(a => { asignMap[a.mascota_id] = a; });
+    const enriched = data.map(m => ({
+      ...m,
+      cuidador_nombre: asignMap[m.id]?.cuidador_nombre ?? null,
+      cuidador_ciudad: asignMap[m.id]?.cuidador_ciudad ?? null
+    }));
+    res.json(enriched);
   } catch (err) { res.status(500).json({ error: err.message }); }
 };
 
 const getById = async (req, res) => {
   try {
     const id = Number.parseInt(req.params.id);
-    const item = db.getStatus()
-      ? await Model.getById(id)
-      : mascotas.find(m => m.id === id);
+    if (!db.getStatus()) {
+      const item = mascotas.find(m => m.id === id);
+      if (!item) return res.status(404).json({ error: 'Mascota no encontrada' });
+      return res.json(item);
+    }
+    const item = await Model.getById(id);
     if (!item) return res.status(404).json({ error: 'Mascota no encontrada' });
-    res.json(item);
+    const [[cuidadorRow]] = await db.query(
+      `SELECT c.nombre AS cuidador_nombre, c.ciudad AS cuidador_ciudad
+       FROM mascotas_cuidadores mc
+       JOIN cuidadores c ON mc.cuidador_id = c.id
+       WHERE mc.mascota_id = ? LIMIT 1`,
+      [id]
+    );
+    res.json({
+      ...item,
+      cuidador_nombre: cuidadorRow?.cuidador_nombre ?? null,
+      cuidador_ciudad: cuidadorRow?.cuidador_ciudad ?? null
+    });
   } catch (err) { res.status(500).json({ error: err.message }); }
 };
 
