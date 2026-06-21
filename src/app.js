@@ -14,12 +14,15 @@ const adminRoutes                = require('./routes/admin.routes');
 
 const app  = express();
 const PORT = process.env.PORT || 3000;
-const allowedOrigins = new Set(
-  (process.env.CORS_ORIGIN || 'http://localhost:4200,http://localhost:8100')
+const allowedOrigins = new Set([
+  ...(process.env.CORS_ORIGIN || 'http://localhost:4200,http://localhost:8100')
     .split(',')
     .map(origin => origin.trim())
-    .filter(Boolean)
-);
+    .filter(Boolean),
+  'capacitor://localhost',
+  'http://localhost',
+  'ionic://localhost',
+]);
 
 app.disable('x-powered-by');
 app.use(cors({
@@ -27,9 +30,9 @@ app.use(cors({
     if (!origin || allowedOrigins.has(origin)) {
       return callback(null, true);
     }
-
     return callback(new Error(`Origen no permitido por CORS: ${origin}`));
-  }
+  },
+  credentials: true
 }));
 app.use(express.json());
 
